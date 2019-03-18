@@ -21,6 +21,7 @@ public class App extends Application {
         singletons.add(corsFilter);
         
         classes.add(AlunoWebService.class);
+        classes.add(AuthWebService.class);
 	}
 	
 	@Override

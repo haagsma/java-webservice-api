@@ -13,6 +13,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
 import com.config.DataBase;
+import com.config.JWT;
 import com.entidades.Aluno;
 import com.google.gson.Gson;
 
@@ -21,11 +22,12 @@ public class AlunoWebService extends DataBase {
 
 	@GET
 	@Path("")
+	@JWT
 	@Produces(App.JSON)
 	@Transactional
 	public Response listar() {
 		List<Aluno> alunos = getCon().createQuery("SELECT a FROM Aluno a", Aluno.class).getResultList();
-		return Response.ok(new Gson().toJson(alunos)).build();
+		return Response.ok(new Gson().toJson(alunos)).build(); 
 	}
 	
 	@POST
