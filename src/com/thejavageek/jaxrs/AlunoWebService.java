@@ -22,9 +22,8 @@ public class AlunoWebService extends DataBase {
 
 	@GET
 	@Path("")
-	@JWT
 	@Produces(App.JSON)
-	@Transactional
+	@JWT
 	public Response listar() {
 		List<Aluno> alunos = getCon().createQuery("SELECT a FROM Aluno a", Aluno.class).getResultList();
 		return Response.ok(new Gson().toJson(alunos)).build(); 

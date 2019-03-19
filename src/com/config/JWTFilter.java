@@ -1,9 +1,7 @@
 package com.config;
 
 import java.io.IOException;
-import java.security.Key;
 
-import javax.crypto.KeyGenerator;
 import javax.ws.rs.Priorities;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
@@ -11,13 +9,15 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.interfaces.DecodedJWT;
+import com.auth0.jwt.interfaces.JWTVerifier;
 import com.sun.jersey.core.util.Priority;
-import com.sun.jersey.spi.inject.Inject;
-
-import io.jsonwebtoken.Jwts;
 
 @Provider
-@JWT
+@com.config.JWT
 @Priority(Priorities.AUTHENTICATION)
 public class JWTFilter implements ContainerRequestFilter {
 
@@ -25,6 +25,7 @@ public class JWTFilter implements ContainerRequestFilter {
 
 	@Override
 	public void filter(ContainerRequestContext requestContext) throws IOException {
+		System.out.println("Entrou no filtro header");
 		// Get the HTTP Authorization header from the request
         String authorizationHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
  
@@ -32,14 +33,14 @@ public class JWTFilter implements ContainerRequestFilter {
         String token = authorizationHeader.substring("Bearer".length()).trim();
  
         try {
- 
-            // Validate the token
-            Jwts.parser().setSigningKey(KEY).parseClaimsJws(token);
- 
-        } catch (Exception e) {
+            Algorithm algorithm = Algorithm.HMAC256(KEY);
+            JWTVerifier verifier = JWT.require(algorithm)
+                .withIssuer("auth0")
+                .build(); //Reusable verifier instance
+            DecodedJWT jwt = verifier.verify(token);
+        } catch (JWTVerificationException exception){
             requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).build());
         }
-		
 	}
 
 }

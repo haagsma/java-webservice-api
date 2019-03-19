@@ -78,11 +78,10 @@
     <artifactId>jersey-json</artifactId>
     <version>1.19.4</version>
 </dependency>
-	<!-- https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt -->
 <dependency>
-    <groupId>io.jsonwebtoken</groupId>
-    <artifactId>jjwt</artifactId>
-    <version>0.7.0</version>
+    <groupId>com.auth0</groupId>
+    <artifactId>java-jwt</artifactId>
+    <version>3.8.0</version>
 </dependency>
 	<!-- https://mvnrepository.com/artifact/com.sun.jersey/jersey-server -->
 <dependency>
