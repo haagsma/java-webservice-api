@@ -8,6 +8,9 @@ import javax.ws.rs.core.Application;
 
 import org.jboss.resteasy.plugins.interceptors.CorsFilter;
 
+import com.config.JWTFilter;
+import com.google.gson.internal.bind.JsonTreeWriter;
+
 @ApplicationPath("/rest")
 public class App extends Application {
 	
@@ -20,6 +23,7 @@ public class App extends Application {
         corsFilter.setAllowedMethods("OPTIONS, GET, POST, DELETE, PUT, PATCH");
         singletons.add(corsFilter);
         
+        classes.add(JWTFilter.class);
         classes.add(AlunoWebService.class);
         classes.add(AuthWebService.class);
 	}

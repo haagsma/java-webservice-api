@@ -14,6 +14,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.JWTVerifier;
+import com.google.gson.Gson;
 import com.sun.jersey.core.util.Priority;
 
 @Provider
@@ -21,7 +22,7 @@ import com.sun.jersey.core.util.Priority;
 @Priority(Priorities.AUTHENTICATION)
 public class JWTFilter implements ContainerRequestFilter {
 
-	String KEY = "L&64YJ.;|zzN<^kg9lLQ@2{FRZ+7<SHI|%$Y;1N,R$CP8nwi?8";
+	String KEY = "haagsma";
 
 	@Override
 	public void filter(ContainerRequestContext requestContext) throws IOException {
@@ -29,18 +30,25 @@ public class JWTFilter implements ContainerRequestFilter {
 		// Get the HTTP Authorization header from the request
         String authorizationHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
  
-        // Extract the token from the HTTP Authorization header
-        String token = authorizationHeader.substring("Bearer".length()).trim();
  
         try {
+            // Extract the token from the HTTP Authorization header
+            String token = authorizationHeader.substring("Bearer".length()).trim();
             Algorithm algorithm = Algorithm.HMAC256(KEY);
             JWTVerifier verifier = JWT.require(algorithm)
                 .withIssuer("auth0")
+		        .withClaim("nome", "Jhonatan")
                 .build(); //Reusable verifier instance
-            DecodedJWT jwt = verifier.verify(token);
+            System.out.println("TOKEN: "+token);
+            DecodedJWT jwt = verifier.verify(token.trim());
+            System.out.println("JWT: "+token);
         } catch (JWTVerificationException exception){
-            requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).build());
-        }
+        	System.out.println("Exception verifier:\n"+exception);
+            requestContext.abortWith(Response.ok(new Gson().toJson("Erro JWTVerificationException no filter")).build());
+        } catch (Exception e) {
+        	System.out.println("Exception:\n"+e);
+            requestContext.abortWith(Response.ok(new Gson().toJson("Token inválido verifique se o token está com bearer")).build());
+		}
 	}
 
 }

@@ -18,6 +18,7 @@ import com.entidades.Aluno;
 import com.google.gson.Gson;
 
 @Path("aluno")
+@JWT
 public class AlunoWebService extends DataBase {
 
 	@GET

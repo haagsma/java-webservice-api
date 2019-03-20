@@ -1,13 +1,12 @@
 package com.thejavageek.jaxrs;
 
-import java.util.Date;
-
-import javax.json.Json;
-import javax.json.JsonObject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTCreationException;
 import com.google.gson.Gson;
 
 @Path("auth")
@@ -16,18 +15,23 @@ public class AuthWebService {
 	@GET
 	@Path("")
 	public Response auth() {
-		/*
-		 * String KEY = "L&64YJ.;|zzN<^kg9lLQ@2{FRZ+7<SHI|%$Y;1N,R$CP8nwi?8"; String jwt
-		 * = Jwts.builder() .signWith(SignatureAlgorithm.HS512, KEY)
-		 * .setSubject("JWT AUTH") .setIssuedAt(new Date(System.currentTimeMillis()))
-		 * .setExpiration(new Date(System.currentTimeMillis()+90000)) .claim("email",
-		 * "jho@jho.com") .claim("id", 124123) .compact(); JsonObject json =
-		 * Json.createObjectBuilder().add("JWT", jwt).build();
-		 * 
-		 * return Response.status(Response.Status.CREATED).header("",
-		 * json).entity(json).build();
-		 */
-		return Response.ok().build();
+		
+		 String KEY = "haagsma"; 
+		 try {
+			    Algorithm algorithm = Algorithm.HMAC256(KEY);
+			    String token = JWT.create()
+			        .withIssuer("auth0")
+			        .withClaim("nome", "Jhonatan")
+			        .sign(algorithm);
+			    return Response.status(Response.Status.CREATED).header("bearer",token).entity(token).build();
+			} catch (JWTCreationException exception){
+			    //Invalid Signing configuration / Couldn't convert Claims.
+				 return Response.ok(new Gson().toJson("Deu erro ao gerar o token")).build();
+			}
+		  
+		 
+		
+		
 	}
-	
+
 }
